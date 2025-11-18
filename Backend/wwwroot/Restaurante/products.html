@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Burger House - Produtos</title>
+    <!--favicon-->
+    <link rel="icon" type="image/png" href="fotos/diet.png">
+    <script src="/_sdk/data_sdk.js"></script>
+    <script src="/_sdk/element_sdk.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./styles.css" />
+    <style>@view-transition { navigation: auto; }</style>
+  </head>
+  <body class="min-h-full bg-gray-100" data-page="products">
+    <div id="app" class="min-h-full">
+      
+  <header class="bg-red-600 text-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 id="restaurant-name" class="text-2xl font-bold">🍔 Burger House Admin</h1>
+          <p class="text-red-100">Painel de Controle do Restaurante</p>
+        </div>
+        <div class="flex space-x-4">
+          <a href="./index.html" id="orders-btn" class="text-white hover:text-red-200 px-4 py-2 font-semibold transition-colors">📋 Pedidos</a>
+          <span id="pending-orders-count" class="bg-white text-red-600 px-2 py-1 rounded-full text-sm hidden">0</span>
+          <a href="./products.html" id="products-btn" class="bg-red-700 hover:bg-red-800 rounded-lg text-white px-4 py-2 font-semibold transition-colors">🍔 Produtos</a>
+          <a href="./customers.html" id="customers-btn" class="text-white hover:text-red-200 px-4 py-2 font-semibold transition-colors">👥 Clientes</a>
+          <a href="./analytics.html" id="analytics-btn" class="text-white hover:text-red-200 px-4 py-2 font-semibold transition-colors">📊 Relatórios</a>
+        </div>
+      </div>
+    </div>
+  </header>
+      <main class="max-w-7xl mx-auto px-4 py-8">
+        
+<section id="products-section" class="space-y-6">
+  <div class="flex justify-between items-center">
+    <h2 class="text-3xl font-bold text-gray-800">🍔 Gestão de Produtos</h2>
+    <button id="add-product-btn" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors flex items-center space-x-2">
+      <span>➕</span><span>Novo Produto</span>
+    </button>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-lg p-6">
+    <div class="flex space-x-4 mb-6">
+      <button id="filter-all-products" class="product-filter-btn bg-red-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors">🍽️ Todos</button>
+      <button id="filter-burgers-products" class="product-filter-btn bg-gray-200 text-gray-700 hover:bg-gray-300 px-4 py-2 rounded-lg font-semibold transition-colors">🍔 Hambúrgueres</button>
+      <button id="filter-sides-products" class="product-filter-btn bg-gray-200 text-gray-700 hover:bg-gray-300 px-4 py-2 rounded-lg font-semibold transition-colors">🍟 Acompanhamentos</button>
+      <button id="filter-drinks-products" class="product-filter-btn bg-gray-200 text-gray-700 hover:bg-gray-300 px-4 py-2 rounded-lg font-semibold transition-colors">🥤 Bebidas</button>
+    </div>
+    <div id="products-list" class="space-y-4"></div>
+  </div>
+</section>
+
+<!-- Modal de Produto -->
+<div id="product-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-xl p-6 max-w-md mx-4 w-full max-h-[90vh] overflow-y-auto">
+    <h3 id="product-modal-title" class="text-2xl font-bold text-gray-800 mb-6">➕ Novo Produto</h3>
+    <form id="product-form" class="space-y-4">
+      <div><label class="block text-sm font-medium text-gray-700 mb-2">Nome do Produto</label><input type="text" id="product-name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required></div>
+      <div><label class="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
+        <select id="product-category" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+          <option value="">Selecione uma categoria</option>
+          <option value="burger">🍔 Hambúrguer</option>
+          <option value="side">🍟 Acompanhamento</option>
+          <option value="drink">🥤 Bebida</option>
+        </select>
+      </div>
+      <div><label class="block text-sm font-medium text-gray-700 mb-2">Preço (R$)</label><input type="number" id="product-price" step="0.01" min="0" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required></div>
+      <div><label class="block text-sm font-medium text-gray-700 mb-2">Descrição</label><textarea id="product-description" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent h-20 resize-none" required></textarea></div>
+      <div><label class="block text-sm font-medium text-gray-700 mb-2">URL da Imagem (opcional)</label><input type="url" id="product-image" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"></div>
+      <div class="flex items-center"><input type="checkbox" id="product-available" checked class="mr-3"><label for="product-available" class="text-sm font-medium text-gray-700">Produto disponível</label></div>
+    </form>
+    <div class="flex space-x-4 mt-6">
+      <button id="product-modal-cancel" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-colors">Cancelar</button>
+      <button id="product-modal-save" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors">Salvar Produto</button>
+    </div>
+  </div>
+</div>
+
+      </main>
+    </div>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

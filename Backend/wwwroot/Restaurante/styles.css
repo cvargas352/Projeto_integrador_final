@@ -1,0 +1,10 @@
+
+/* Burger House Admin - estilos custom */
+body { box-sizing: border-box; }
+.kanban-column { min-height: 500px; }
+.order-card { transition: all 0.3s ease; }
+.order-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+.status-badge { animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.8;} }
+.fade-in { animation: fadeIn .5s ease-in; }
+@keyframes fadeIn { from{opacity:0; transform: translateY(20px);} to{opacity:1; transform: translateY(0);} }

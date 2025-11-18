@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Menu - Login</title>
+
+
+  <!-- Tailwind para facilitar o layout (já usado no projeto) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-100 flex items-center justify-center">
+  <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+    <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+      🔐 Login - Digital Menu
+    </h1>
+
+    <form id="login-form" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1" for="email">E-mail</label>
+        <input id="email" type="email" required
+               class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1" for="password">Senha</label>
+        <input id="password" type="password" required
+               class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" />
+      </div>
+
+      <div id="error-msg"
+           class="hidden text-sm text-red-600 font-semibold bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+      </div>
+
+      <button type="submit"
+              class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 rounded-lg transition-colors">
+        Entrar
+      </button>
+    </form>
+
+    <p class="mt-4 text-xs text-gray-500 text-center">
+      Use as credenciais de <strong>restaurante</strong> ou faça login como <strong>cliente</strong>.
+    </p>
+  </div>
+
+  <script>
+  // ===== Configuração de "conta restaurante" (admin local) =====
+  const ADMIN_EMAIL = "admin@burgerhouse.com";
+  const ADMIN_PASS  = "123456";
+
+  async function loginViaApi(email, password) {
+    const resp = await fetch("/api/users/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    });
+
+    if (!resp.ok) {
+      throw new Error("Login inválido");
+    }
+
+    return resp.json();
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const form     = document.getElementById("login-form");
+    const emailInp = document.getElementById("email");
+    const passInp  = document.getElementById("password");
+    const errorMsg = document.getElementById("error-msg");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorMsg.classList.add("hidden");
+      errorMsg.textContent = "";
+
+      const email    = emailInp.value.trim();
+      const password = passInp.value.trim();
+
+      if (!email || !password) {
+        errorMsg.textContent = "Preencha e-mail e senha.";
+        errorMsg.classList.remove("hidden");
+        return;
+      }
+
+      // 1) Verificar se é restaurante ADMIN local
+      if (email === ADMIN_EMAIL && password === ADMIN_PASS) {
+        const adminUser = {
+          id: 0,
+          name: "Admin Restaurante",
+          email,
+          role: "restaurante"
+        };
+        // salva para o front do restaurante/cliente usar, se quiser
+        localStorage.setItem("dm_currentUser", JSON.stringify(adminUser));
+
+        window.location.href = "/Restaurante/index.html";
+        return;
+      }
+
+      // 2) Tentativa de login como usuário da API (cliente ou restaurante)
+      try {
+        const user = await loginViaApi(email, password);
+
+        // Guarda o usuário no mesmo formato usado pelo Cliente/scrip.js
+        localStorage.setItem("dm_currentUser", JSON.stringify(user));
+
+        // Se for restaurante pela API, manda para o painel;
+        // senão, vai para o front de cliente.
+        if ((user.role || "").toLowerCase() === "restaurante") {
+          window.location.href = "/Restaurante/index.html";
+        } else {
+          window.location.href = "/Cliente/index.html";
+        }
+      } catch (err) {
+        console.error(err);
+        errorMsg.textContent = "Credenciais inválidas. Verifique seu e-mail e senha.";
+        errorMsg.classList.remove("hidden");
+      }
+    });
+  });
+</script>
+</body>
+</html>

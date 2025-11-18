@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Burger House - Clientes</title>
+    <!--favicon-->
+    <link rel="icon" type="image/png" href="fotos/diet.png">
+    <script src="/_sdk/data_sdk.js"></script>
+    <script src="/_sdk/element_sdk.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./styles.css" />
+    <style>@view-transition { navigation: auto; }</style>
+  </head>
+  <body class="min-h-full bg-gray-100" data-page="customers">
+    <div id="app" class="min-h-full">
+      
+  <header class="bg-red-600 text-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 id="restaurant-name" class="text-2xl font-bold">🍔 Burger House Admin</h1>
+          <p class="text-red-100">Painel de Controle do Restaurante</p>
+        </div>
+        <div class="flex space-x-4">
+          <a href="./index.html" id="orders-btn" class="text-white hover:text-red-200 px-4 py-2 font-semibold transition-colors">📋 Pedidos</a>
+          <span id="pending-orders-count" class="bg-white text-red-600 px-2 py-1 rounded-full text-sm hidden">0</span>
+          <a href="./products.html" id="products-btn" class="text-white hover:text-red-200 px-4 py-2 font-semibold transition-colors">🍔 Produtos</a>
+          <a href="./customers.html" id="customers-btn" class="bg-red-700 hover:bg-red-800 rounded-lg text-white px-4 py-2 font-semibold transition-colors">👥 Clientes</a>
+          <a href="./analytics.html" id="analytics-btn" class="text-white hover:text-red-200 px-4 py-2 font-semibold transition-colors">📊 Relatórios</a>
+        </div>
+      </div>
+    </div>
+  </header>
+      <main class="max-w-7xl mx-auto px-4 py-8">
+        
+<section id="customers-section" class="space-y-6">
+  <div class="flex justify-between items-center">
+    <h2 class="text-3xl font-bold text-gray-800">👥 Gestão de Clientes</h2>
+    <div class="flex space-x-4">
+      <input type="text" id="customer-search" placeholder="Buscar cliente..." class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent">
+      <button id="export-customers-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors">📊 Exportar</button>
+    </div>
+  </div>
+  <div class="bg-white rounded-xl shadow-lg p-6">
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr class="border-b border-gray-200">
+            <th class="text-left py-3 px-4 font-semibold text-gray-700">Cliente</th>
+            <th class="text-left py-3 px-4 font-semibold text-gray-700">Contato</th>
+            <th class="text-left py-3 px-4 font-semibold text-gray-700">Pedidos</th>
+            <th class="text-left py-3 px-4 font-semibold text-gray-700">Total Gasto</th>
+            <th class="text-left py-3 px-4 font-semibold text-gray-700">Último Pedido</th>
+            <th class="text-left py-3 px-4 font-semibold text-gray-700">Ações</th>
+          </tr>
+        </thead>
+        <tbody id="customers-table-body"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+      </main>
+    </div>
+    <script src="./app.js" defer></script>
+  </body>
+</html>
