@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "DigitalMenu.Api": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:62169;http://localhost:62170"
+    }
+  }
+}
