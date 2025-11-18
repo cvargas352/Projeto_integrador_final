@@ -1,5 +1,11 @@
-https://cvargas352.github.io/Frontend/Projeto-Integrador-main/login/login.html
+## 🔗 Navegação do Projeto
 
-https://cvargas352.github.io/Frontend/Projeto-Integrador-main/restaurante/index.html
+- **Login**  
+  👉 <a href="https://cvargas352.github.io/Frontend/Projeto-Integrador-main/login/login.html">Login</a>
 
-https://cvargas352.github.io/Frontend/Projeto-Integrador-main/cliente/index.html
+
+- **Restaurante**  
+  👉 <a href="https://cvargas352.github.io/Frontend/Projeto-Integrador-main/restaurante/index.html">Restaurante</a>
+
+- **Cliente**  
+  👉 <a href="https://cvargas352.github.io/Frontend/Projeto-Integrador-main/cliente/index.html">Cliente</a>
