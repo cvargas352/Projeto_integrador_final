@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Burger House - Delivery</title>
+
+   <!--favicon-->
+    <link rel="icon" type="image/png" href="../fotos/diet.png">
+
+    <!-- SDKs (mantidos) -->
+    <script src="/_sdk/data_sdk.js"></script>
+    <script src="/_sdk/element_sdk.js"></script>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- CSS próprio -->
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./styles.css" />
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+ </head>
+ <body class="min-h-full bg-gray-100">
+  <div id="app"><!-- ========================================
+             HEADER - CABEÇALHO DO SITE
+             ======================================== -->
+   <header class="bg-black text-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4">
+     <div class="flex justify-between items-center"><!-- Logo e tagline -->
+      <div>
+       <h1 id="restaurant-name" class="text-2xl font-bold">🍔 Burger House</h1>
+       <p id="tagline" class="tagline text-gray-300">Os melhores hambúrgueres da cidade</p>
+      </div><!-- Menu de navegação -->
+      <div class="flex items-center space-x-4"><button id="menu-btn" class="text-white hover:text-gray-300 px-4 py-2 font-semibold transition-colors"> Cardápio </button> <button id="orders-btn" class="text-white hover:text-gray-300 px-4 py-2 font-semibold transition-colors"> Meus Pedidos </button> <!-- Dropdown de conta do usuário -->
+       <div class="relative"><button id="account-btn" class="text-white hover:text-gray-300 px-4 py-2 font-semibold transition-colors flex items-center space-x-1"> <span>Minha Conta</span>
+         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+         </svg></button> <!-- Menu dropdown -->
+        <div id="account-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50"><!-- Opções para usuário logado -->
+         <div id="logged-options" class="hidden"><button id="edit-account-btn" class="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 transition-colors"> Editar Conta </button> <button id="logout-btn" class="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 transition-colors"> Sair </button>
+         </div><!-- Opções para usuário não logado -->
+        <div id="guest-options" class="hidden">
+        <a href="./login/login.html" class="block">
+        <button id="login-header-btn" class="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 transition-colors">Entrar</button></a>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </header><!-- ========================================
+             BANNER PRINCIPAL
+             ======================================== -->
+   <div class="relative h-80 overflow-hidden"><img id="banner-image" src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=1600&amp;h=400&amp;fit=crop" alt="Deliciosos hambúrgueres artesanais" class="w-full h-full object-cover" onerror="this.src=''; this.alt='Banner image'; this.style.backgroundColor='#dc2626';">
+   </div><!-- ========================================
+             SEÇÃO DO CARDÁPIO
+             ======================================== -->
+   <main id="menu-section" class="max-w-7xl mx-auto px-4 py-8">
+    <div class="flex gap-6"><!-- COLUNA ESQUERDA - Lista de Produtos -->
+     <div class="flex-1"><!-- Filtros de categoria -->
+      <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+       <div class="flex space-x-4 overflow-x-auto"><button id="filter-all" class="filter-btn bg-red-600 text-white px-6 py-3 rounded-lg font-semibold whitespace-nowrap transition-colors"> Todos </button> <button id="filter-burgers" class="filter-btn bg-gray-200 text-gray-700 hover:bg-gray-300 px-6 py-3 rounded-lg font-semibold whitespace-nowrap transition-colors"> Hambúrgueres </button> <button id="filter-sides" class="filter-btn bg-gray-200 text-gray-700 hover:bg-gray-300 px-6 py-3 rounded-lg font-semibold whitespace-nowrap transition-colors"> Acompanhamentos </button> <button id="filter-drinks" class="filter-btn bg-gray-200 text-gray-700 hover:bg-gray-300 px-6 py-3 rounded-lg font-semibold whitespace-nowrap transition-colors"> Bebidas </button>
+       </div>
+      </div><!-- Lista de produtos (renderizada via JavaScript) -->
+      <div id="products-list" class="space-y-4"><!-- Produtos serão inseridos aqui dinamicamente -->
+      </div>
+     </div><!-- COLUNA DIREITA - Carrinho Lateral (Desktop) -->
+     <div id="sidebar-cart" class="hidden lg:block w-96 sticky top-24 self-start">
+      <div class="bg-white rounded-xl shadow-lg p-6"><!-- Título do carrinho -->
+       <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+        </svg> Seu Carrinho</h2><!-- Itens do carrinho (renderizados via JavaScript) -->
+       <div id="sidebar-cart-items" class="space-y-3 mb-6 max-h-96 overflow-y-auto">
+        <p class="text-center text-gray-500 py-8">Seu carrinho está vazio</p>
+       </div><!-- SEÇÃO DE CÁLCULO DE FRETE -->
+       <div id="sidebar-delivery-section" class="border-t pt-4 mb-4">
+        <h3 class="text-sm font-semibold text-gray-800 mb-3">Calcular Frete</h3><!-- Opção para usuário logado com endereços -->
+        <div id="sidebar-logged-delivery" class="hidden"><select id="sidebar-address-select" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-sm mb-2"> <option value="">Selecione um endereço</option> </select> <button id="sidebar-add-address-btn" class="w-full text-sm text-red-600 hover:text-red-700 font-semibold py-2 border border-red-600 rounded-lg transition-colors"> + Adicionar novo endereço </button>
+        </div><!-- Opção para usuário não logado -->
+        <div id="sidebar-guest-delivery" class="hidden">
+         <div class="flex gap-2"><input type="text" id="sidebar-cep-input" placeholder="00000-000" maxlength="9" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-sm"> <button id="sidebar-calc-btn" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors text-sm"> OK </button>
+         </div>
+         <p class="text-xs text-gray-500 mt-1">Digite seu CEP para calcular</p>
+        </div><!-- Opções de tipo de entrega -->
+        <div id="sidebar-delivery-type" class="hidden mt-3 space-y-2"><!-- Entrega em casa --> <label class="flex items-center p-2 border border-gray-200 rounded-lg cursor-pointer hover:border-red-500 transition-colors"> <input type="radio" name="sidebar-delivery-type" value="delivery" checked class="mr-2">
+          <div class="flex-1 text-sm">
+           <div class="font-semibold">
+            Entrega
+           </div>
+          </div>
+          <div class="text-green-600 font-semibold text-sm" id="sidebar-delivery-price">
+           R$ 5,00
+          </div></label> <!-- Retirada no local --> <label class="flex items-center p-2 border border-gray-200 rounded-lg cursor-pointer hover:border-red-500 transition-colors"> <input type="radio" name="sidebar-delivery-type" value="pickup" class="mr-2">
+          <div class="flex-1 text-sm">
+           <div class="font-semibold">
+            Retirada
+           </div>
+          </div>
+          <div class="text-green-600 font-semibold text-sm">
+           Grátis
+          </div></label>
+        </div>
+       </div><!-- Resumo de valores -->
+       <div class="border-t pt-4 space-y-2">
+        <div class="flex justify-between text-gray-700"><span>Subtotal:</span> <span id="sidebar-subtotal">R$ 0,00</span>
+        </div>
+        <div class="flex justify-between text-gray-700"><span>Taxa de entrega:</span> <span id="sidebar-delivery-fee">R$ 0,00</span>
+        </div>
+        <div class="flex justify-between text-xl font-bold text-gray-900 border-t pt-2"><span>Total:</span> <span id="sidebar-total" class="text-green-600">R$ 0,00</span>
+        </div>
+       </div><!-- Botão de finalizar pedido --> <button id="sidebar-checkout-btn" disabled class="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors mt-4"> Finalizar Pedido </button>
+      </div>
+     </div>
+    </div>
+   </main><!-- ========================================
+             SEÇÃO MEUS PEDIDOS
+             ======================================== -->
+   <section id="orders-section" class="hidden max-w-7xl mx-auto px-4 py-8">
+    <div class="bg-white rounded-xl shadow-lg p-6">
+     <h2 class="text-2xl font-bold text-gray-800 mb-6">Meus Pedidos</h2><!-- Lista de pedidos (renderizada via JavaScript) -->
+     <div id="orders-list" class="space-y-4"></div>
+    </div>
+   </section><!-- ========================================
+             SEÇÃO MINHA CONTA
+             ======================================== -->
+   <section id="account-section" class="hidden max-w-3xl mx-auto px-4 py-8">
+    <div class="bg-white rounded-xl shadow-lg p-6">
+     <h2 class="text-2xl font-bold text-gray-800 mb-6">Minha Conta</h2><!-- Formulário de dados do usuário -->
+     <form id="account-form" class="space-y-4"><!-- Nome completo -->
+      <div><label for="user-name" class="block text-sm font-medium text-gray-700 mb-2">Nome completo</label> <input type="text" id="user-name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+      </div><!-- E-mail -->
+      <div><label for="user-email" class="block text-sm font-medium text-gray-700 mb-2">E-mail</label> <input type="email" id="user-email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+      </div><!-- Telefone -->
+      <div><label for="user-phone" class="block text-sm font-medium text-gray-700 mb-2">Telefone</label> <input type="tel" id="user-phone" placeholder="(00) 00000-0000" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+      </div><!-- SEÇÃO DE ENDEREÇO -->
+      <div class="border-t pt-6 mt-6">
+       <h3 class="text-lg font-semibold text-gray-800 mb-4">Endereço de Entrega</h3><!-- CEP e Estado -->
+       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="md:col-span-2"><label for="user-cep" class="block text-sm font-medium text-gray-700 mb-2">CEP</label>
+         <div class="relative"><input type="text" id="user-cep" placeholder="00000-000" maxlength="9" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+          <div id="cep-loading" class="hidden absolute right-3 top-1/2 transform -translate-y-1/2">
+           <div class="spinner"></div>
+          </div>
+         </div>
+         <p class="text-xs text-gray-500 mt-1">O endereço será preenchido automaticamente</p>
+        </div>
+        <div><label for="user-state" class="block text-sm font-medium text-gray-700 mb-2">Estado</label> <input type="text" id="user-state" maxlength="2" placeholder="SP" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent uppercase" required>
+        </div>
+       </div><!-- Cidade e Bairro -->
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <div><label for="user-city" class="block text-sm font-medium text-gray-700 mb-2">Cidade</label> <input type="text" id="user-city" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+        </div>
+        <div><label for="user-neighborhood" class="block text-sm font-medium text-gray-700 mb-2">Bairro</label> <input type="text" id="user-neighborhood" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+        </div>
+       </div><!-- Rua e Número -->
+       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
+        <div class="md:col-span-3"><label for="user-street" class="block text-sm font-medium text-gray-700 mb-2">Rua</label> <input type="text" id="user-street" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+        </div>
+        <div><label for="user-number" class="block text-sm font-medium text-gray-700 mb-2">Número</label> <input type="text" id="user-number" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+        </div>
+       </div><!-- Complemento -->
+       <div class="mt-4"><label for="user-complement" class="block text-sm font-medium text-gray-700 mb-2">Complemento (opcional)</label> <input type="text" id="user-complement" placeholder="Apartamento, bloco, etc." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent">
+       </div>
+      </div><!-- Botão de salvar --> <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"> Salvar Informações </button>
+     </form>
+    </div>
+   </section><!-- ========================================
+             CARRINHO FLUTUANTE (Mobile)
+             ======================================== -->
+   <div id="cart-float" class="cart-float hidden"><button id="cart-btn" class="bg-red-600 hover:bg-red-700 text-white rounded-full p-4 shadow-lg flex items-center space-x-2 transition-colors">
+     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+     </svg><span id="cart-count" class="bg-white text-red-600 rounded-full px-2 py-1 text-sm font-bold">0</span> </button>
+   </div><!-- ========================================
+             MODAL DO CARRINHO (Mobile)
+             ======================================== -->
+   <div id="cart-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto slide-in"><!-- Cabeçalho do modal -->
+     <div class="sticky top-0 bg-white border-b p-6 z-10">
+      <div class="flex justify-between items-center">
+       <h2 class="text-2xl font-bold text-gray-800">Seu Carrinho</h2><button id="close-cart" class="text-gray-500 hover:text-gray-700">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg></button>
+      </div>
+     </div><!-- Itens do carrinho (renderizados via JavaScript) -->
+     <div id="cart-items" class="p-6 space-y-4"></div><!-- SEÇÃO DE CÁLCULO DE FRETE NO MODAL -->
+     <div class="px-6 pb-4">
+      <div class="border-t pt-4">
+       <h3 class="text-sm font-semibold text-gray-800 mb-3">Calcular Frete</h3><!-- Opção para usuário logado -->
+       <div id="modal-logged-delivery" class="hidden"><select id="modal-address-select" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-sm mb-2"> <option value="">Selecione um endereço</option> </select> <button id="modal-add-address-btn" class="w-full text-sm text-red-600 hover:text-red-700 font-semibold py-2 border border-red-600 rounded-lg transition-colors"> + Adicionar novo endereço </button>
+       </div><!-- Opção para usuário não logado -->
+       <div id="modal-guest-delivery" class="hidden">
+        <div class="flex gap-2"><input type="text" id="modal-cep-input" placeholder="00000-000" maxlength="9" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-sm"> <button id="modal-calc-btn" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors text-sm"> OK </button>
+        </div>
+        <p class="text-xs text-gray-500 mt-1">Digite seu CEP para calcular</p>
+       </div><!-- Opções de tipo de entrega -->
+       <div id="modal-delivery-type" class="hidden mt-3 space-y-2"><!-- Entrega --> <label class="flex items-center p-2 border border-gray-200 rounded-lg cursor-pointer hover:border-red-500 transition-colors"> <input type="radio" name="modal-delivery-type" value="delivery" checked class="mr-2">
+         <div class="flex-1 text-sm">
+          <div class="font-semibold">
+           Entrega
+          </div>
+         </div>
+         <div class="text-green-600 font-semibold text-sm" id="modal-delivery-price">
+          R$ 5,00
+         </div></label> <!-- Retirada --> <label class="flex items-center p-2 border border-gray-200 rounded-lg cursor-pointer hover:border-red-500 transition-colors"> <input type="radio" name="modal-delivery-type" value="pickup" class="mr-2">
+         <div class="flex-1 text-sm">
+          <div class="font-semibold">
+           Retirada
+          </div>
+         </div>
+         <div class="text-green-600 font-semibold text-sm">
+          Grátis
+         </div></label>
+       </div>
+      </div>
+     </div><!-- Rodapé com totais e botão de checkout -->
+     <div class="sticky bottom-0 bg-white border-t p-6">
+      <div class="space-y-3 mb-4">
+       <div class="flex justify-between text-gray-700"><span>Subtotal:</span> <span id="cart-subtotal">R$ 0,00</span>
+       </div>
+       <div class="flex justify-between text-gray-700"><span>Taxa de entrega:</span> <span id="cart-delivery-fee">R$ 0,00</span>
+       </div>
+       <div class="flex justify-between text-xl font-bold text-gray-900 border-t pt-3"><span>Total:</span> <span id="cart-total">R$ 0,00</span>
+       </div>
+      </div><button id="checkout-btn" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors"> Finalizar Pedido </button>
+     </div>
+    </div>
+   </div><!-- ========================================
+             MODAL DE CHECKOUT - ENDEREÇO
+             ======================================== -->
+   <div id="checkout-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto slide-in"><!-- Cabeçalho -->
+     <div class="sticky top-0 bg-white border-b p-6 z-10">
+      <div class="flex justify-between items-center">
+       <h2 class="text-2xl font-bold text-gray-800">Finalizar Pedido</h2><button id="close-checkout" class="text-gray-500 hover:text-gray-700">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg></button>
+      </div>
+     </div>
+     <div class="p-6"><!-- SEÇÃO PARA USUÁRIO LOGADO -->
+      <div id="checkout-logged-section" class="hidden space-y-6"><!-- Seleção de endereço -->
+       <div>
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Selecione o endereço de entrega</h3>
+        <div id="address-list" class="space-y-3 mb-4"><!-- Lista de endereços será renderizada aqui -->
+        </div><button id="add-new-address-btn" class="w-full border-2 border-dashed border-gray-300 hover:border-red-500 text-gray-600 hover:text-red-600 font-semibold py-3 px-6 rounded-lg transition-colors"> + Adicionar novo endereço </button>
+       </div><!-- Tipo de entrega -->
+       <div>
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Tipo de Entrega</h3>
+        <div class="space-y-3"><!-- Entrega --> <label class="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-red-500 transition-colors"> <input type="radio" name="delivery-type-logged" value="delivery" checked class="mr-3">
+          <div class="flex-1">
+           <div class="font-semibold">
+            Entrega
+           </div>
+           <div class="text-sm text-gray-600">
+            Receba em casa
+           </div>
+          </div>
+          <div class="text-green-600 font-semibold">
+           R$ 5,00
+          </div></label> <!-- Retirada --> <label class="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-red-500 transition-colors"> <input type="radio" name="delivery-type-logged" value="pickup" class="mr-3">
+          <div class="flex-1">
+           <div class="font-semibold">
+            Retirada
+           </div>
+           <div class="text-sm text-gray-600">
+            Retire no local
+           </div>
+          </div>
+          <div class="text-green-600 font-semibold">
+           Grátis
+          </div></label>
+        </div>
+       </div><button id="continue-logged-btn" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors"> Continuar </button>
+      </div><!-- SEÇÃO PARA USUÁRIO NÃO LOGADO -->
+      <div id="checkout-guest-section" class="hidden">
+       <form id="guest-address-form" class="space-y-4">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Endereço de Entrega</h3><!-- Nome -->
+        <div><label for="guest-name" class="block text-sm font-medium text-gray-700 mb-2">Nome completo</label> <input type="text" id="guest-name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+        </div><!-- Telefone -->
+        <div><label for="guest-phone" class="block text-sm font-medium text-gray-700 mb-2">Telefone</label> <input type="tel" id="guest-phone" placeholder="(00) 00000-0000" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+        </div><!-- CEP e Estado -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+         <div class="md:col-span-2"><label for="guest-cep" class="block text-sm font-medium text-gray-700 mb-2">CEP</label>
+          <div class="relative"><input type="text" id="guest-cep" placeholder="00000-000" maxlength="9" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+           <div id="guest-cep-loading" class="hidden absolute right-3 top-1/2 transform -translate-y-1/2">
+            <div class="spinner"></div>
+           </div>
+          </div>
+         </div>
+         <div><label for="guest-state" class="block text-sm font-medium text-gray-700 mb-2">Estado</label> <input type="text" id="guest-state" maxlength="2" placeholder="SP" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent uppercase" required>
+         </div>
+        </div><!-- Cidade e Bairro -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+         <div><label for="guest-city" class="block text-sm font-medium text-gray-700 mb-2">Cidade</label> <input type="text" id="guest-city" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+         </div>
+         <div><label for="guest-neighborhood" class="block text-sm font-medium text-gray-700 mb-2">Bairro</label> <input type="text" id="guest-neighborhood" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+         </div>
+        </div><!-- Rua e Número -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+         <div class="md:col-span-3"><label for="guest-street" class="block text-sm font-medium text-gray-700 mb-2">Rua</label> <input type="text" id="guest-street" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+         </div>
+         <div><label for="guest-number" class="block text-sm font-medium text-gray-700 mb-2">Número</label> <input type="text" id="guest-number" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+         </div>
+        </div><!-- Complemento -->
+        <div><label for="guest-complement" class="block text-sm font-medium text-gray-700 mb-2">Complemento (opcional)</label> <input type="text" id="guest-complement" placeholder="Apartamento, bloco, etc." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent">
+        </div><!-- Tipo de entrega -->
+        <div>
+         <h3 class="text-lg font-semibold text-gray-800 mb-4">Tipo de Entrega</h3>
+         <div class="space-y-3"><!-- Entrega --> <label class="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-red-500 transition-colors"> <input type="radio" name="delivery-type-guest" value="delivery" checked class="mr-3">
+           <div class="flex-1">
+            <div class="font-semibold">
+             Entrega
+            </div>
+            <div class="text-sm text-gray-600">
+             Receba em casa
+            </div>
+           </div>
+           <div class="text-green-600 font-semibold">
+            R$ 5,00
+           </div></label> <!-- Retirada --> <label class="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-red-500 transition-colors"> <input type="radio" name="delivery-type-guest" value="pickup" class="mr-3">
+           <div class="flex-1">
+            <div class="font-semibold">
+             Retirada
+            </div>
+            <div class="text-sm text-gray-600">
+             Retire no local
+            </div>
+           </div>
+           <div class="text-green-600 font-semibold">
+            Grátis
+           </div></label>
+         </div>
+        </div><button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors"> Continuar </button>
+       </form>
+      </div>
+     </div>
+    </div>
+   </div><!-- ========================================
+             MODAL DE LOGIN/CADASTRO
+             ======================================== -->
+   <div id="auth-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl max-w-md w-full slide-in">
+     <div class="p-6">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">Deseja criar uma conta?</h2>
+      <p class="text-gray-600 mb-6">Crie uma conta para salvar seus endereços e acompanhar seus pedidos mais facilmente!</p>
+      <div class="space-y-3"><!-- Criar conta --> <button id="create-account-btn" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"> Criar Conta </button> <!-- Login --> <button id="login-btn" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-lg transition-colors"> Já tenho conta - Fazer Login </button> <!-- Continuar sem cadastro --> <button id="continue-guest-btn" class="w-full border-2 border-gray-300 hover:border-gray-400 text-gray-600 font-semibold py-3 px-6 rounded-lg transition-colors"> Continuar sem cadastro </button>
+      </div>
+     </div>
+    </div>
+   </div><!-- ========================================
+             MODAL DE PERSONALIZAÇÃO DO PRODUTO
+             ======================================== -->
+   <div id="customize-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto slide-in"><!-- Cabeçalho -->
+     <div class="sticky top-0 bg-white border-b p-6 z-10">
+      <div class="flex justify-between items-center">
+       <h2 id="customize-product-name" class="text-2xl font-bold text-gray-800"></h2><button id="close-customize" class="text-gray-500 hover:text-gray-700">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg></button>
+      </div>
+     </div>
+     <div class="p-6"><!-- Informações do produto -->
+      <div class="mb-6"><img id="customize-product-image" src="" alt="" class="w-full h-48 object-cover rounded-lg" onerror="this.style.display='none'">
+       <p id="customize-product-description" class="text-gray-600 mt-4"></p>
+       <p id="customize-product-price" class="text-2xl font-bold text-green-600 mt-2"></p>
+      </div>
+      <div class="space-y-6"><!-- REMOVER INGREDIENTES -->
+       <div id="remove-ingredients-section">
+        <h3 class="text-lg font-semibold text-gray-800 mb-3">Remover ingredientes</h3>
+        <div id="remove-ingredients-list" class="space-y-2"><!-- Lista de ingredientes será renderizada aqui -->
+        </div>
+       </div><!-- ADICIONAR INGREDIENTES -->
+       <div id="add-ingredients-section">
+        <h3 class="text-lg font-semibold text-gray-800 mb-3">Adicionar ingredientes extras</h3>
+        <div id="add-ingredients-list" class="space-y-2"><!-- Lista de ingredientes será renderizada aqui -->
+        </div>
+       </div><!-- OBSERVAÇÕES -->
+       <div><label for="product-notes" class="block text-lg font-semibold text-gray-800 mb-3">Observações</label> <textarea id="product-notes" rows="3" placeholder="Ex: Sem cebola, ponto da carne bem passado..." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"></textarea>
+       </div><!-- QUANTIDADE -->
+       <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg"><span class="text-lg font-semibold">Quantidade</span>
+        <div class="flex items-center space-x-3"><button id="decrease-quantity" class="bg-gray-200 hover:bg-gray-300 text-gray-700 w-10 h-10 rounded-full font-bold text-xl">-</button> <span id="customize-quantity" class="font-bold text-xl w-12 text-center">1</span> <button id="increase-quantity" class="bg-red-600 hover:bg-red-700 text-white w-10 h-10 rounded-full font-bold text-xl">+</button>
+        </div>
+       </div><!-- TOTAL -->
+       <div class="flex items-center justify-between text-2xl font-bold border-t pt-4"><span>Total:</span> <span id="customize-total-price" class="text-green-600">R$ 0,00</span>
+       </div><!-- Botão adicionar ao carrinho --> <button id="add-to-cart-btn" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors"> Adicionar ao Carrinho </button>
+      </div>
+     </div>
+    </div>
+   </div><!-- ========================================
+             MODAL DE CONFIRMAÇÃO DO PEDIDO
+             ======================================== -->
+   <div id="order-summary-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto slide-in"><!-- Cabeçalho -->
+     <div class="sticky top-0 bg-white border-b p-6 z-10">
+      <div class="flex justify-between items-center">
+       <h2 class="text-2xl font-bold text-gray-800">Confirmar Pedido</h2><button id="close-order-summary" class="text-gray-500 hover:text-gray-700">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg></button>
+      </div>
+     </div>
+     <div class="p-6">
+      <div class="space-y-6"><!-- Informações de entrega (renderizadas via JavaScript) -->
+       <div id="order-delivery-info"></div><!-- Resumo do pedido -->
+       <div>
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Resumo do Pedido</h3>
+        <div id="final-order-items" class="space-y-2 mb-4"><!-- Itens serão renderizados aqui -->
+        </div><!-- Totais -->
+        <div class="border-t pt-4 space-y-2">
+         <div class="flex justify-between text-gray-700"><span>Subtotal:</span> <span id="final-subtotal">R$ 0,00</span>
+         </div>
+         <div class="flex justify-between text-gray-700"><span>Taxa de entrega:</span> <span id="final-delivery-fee">R$ 0,00</span>
+         </div>
+         <div class="flex justify-between text-xl font-bold text-gray-900 border-t pt-2"><span>Total:</span> <span id="final-total">R$ 0,00</span>
+         </div>
+        </div>
+       </div><!-- Botão confirmar --> <button id="confirm-final-order-btn" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors"> Confirmar Pedido </button>
+      </div>
+     </div>
+    </div>
+   </div><!-- ========================================
+             MODAL DE ADICIONAR/EDITAR ENDEREÇO
+             ======================================== -->
+   <div id="address-form-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto slide-in"><!-- Cabeçalho -->
+     <div class="sticky top-0 bg-white border-b p-6 z-10">
+      <div class="flex justify-between items-center">
+       <h2 class="text-2xl font-bold text-gray-800">Adicionar Endereço</h2><button id="close-address-form" class="text-gray-500 hover:text-gray-700">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg></button>
+      </div>
+     </div>
+     <div class="p-6"><!-- Formulário de novo endereço -->
+      <form id="new-address-form" class="space-y-4"><!-- CEP e Estado -->
+       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="md:col-span-2"><label for="new-cep" class="block text-sm font-medium text-gray-700 mb-2">CEP</label>
+         <div class="relative"><input type="text" id="new-cep" placeholder="00000-000" maxlength="9" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+          <div id="new-cep-loading" class="hidden absolute right-3 top-1/2 transform -translate-y-1/2">
+           <div class="spinner"></div>
+          </div>
+         </div>
+        </div>
+        <div><label for="new-state" class="block text-sm font-medium text-gray-700 mb-2">Estado</label> <input type="text" id="new-state" maxlength="2" placeholder="SP" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent uppercase" required>
+        </div>
+       </div><!-- Cidade e Bairro -->
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div><label for="new-city" class="block text-sm font-medium text-gray-700 mb-2">Cidade</label> <input type="text" id="new-city" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+        </div>
+        <div><label for="new-neighborhood" class="block text-sm font-medium text-gray-700 mb-2">Bairro</label> <input type="text" id="new-neighborhood" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+        </div>
+       </div><!-- Rua e Número -->
+       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="md:col-span-3"><label for="new-street" class="block text-sm font-medium text-gray-700 mb-2">Rua</label> <input type="text" id="new-street" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+        </div>
+        <div><label for="new-number" class="block text-sm font-medium text-gray-700 mb-2">Número</label> <input type="text" id="new-number" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+        </div>
+       </div><!-- Complemento -->
+       <div><label for="new-complement" class="block text-sm font-medium text-gray-700 mb-2">Complemento (opcional)</label> <input type="text" id="new-complement" placeholder="Apartamento, bloco, etc." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent">
+       </div><button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors"> Salvar Endereço </button>
+      </form>
+     </div>
+    </div>
+   </div>
+  </div>
+    <!-- JS externo -->
+    <script src="scrip.js"></script>
+  </body>
+
+</html>

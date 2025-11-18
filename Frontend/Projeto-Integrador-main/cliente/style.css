@@ -1,0 +1,99 @@
+      /* ===== RESET E CONFIGURAÇÕES BÁSICAS ===== */
+        body {
+            box-sizing: border-box;
+        }
+
+        /* ===== ANIMAÇÕES ===== */
+        
+        /* Animação de fade in para elementos que aparecem */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animação de slide in para modais */
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        /* Classe para aplicar fade in */
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Classe para aplicar slide in */
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        /* ===== CARRINHO FLUTUANTE ===== */
+        
+        /* Posicionamento fixo do botão do carrinho */
+        .cart-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        /* ===== CARDS DE PRODUTOS ===== */
+        
+        /* Transição suave para hover nos cards */
+        .product-card {
+            transition: all 0.3s ease;
+        }
+
+        /* Efeito hover nos cards de produto */
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        /* ===== IMAGENS ===== */
+        
+        /* Estilo padrão para imagens de produto */
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
+
+        /* ===== LOADING SPINNER ===== */
+        
+        /* Animação de rotação para spinner */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Estilo do spinner de loading */
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #dc2626;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        /* ===== INPUTS DESABILITADOS ===== */
+        
+        /* Estilo para campos desabilitados */
+        input:disabled, 
+        select:disabled, 
+        textarea:disabled {
+            background-color: #f3f4f6;
+            cursor: not-allowed;
+        }

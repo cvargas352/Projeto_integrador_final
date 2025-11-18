@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Burger House - Login</title>
+  <!--favicon-->
+    <link rel="icon" type="image/png" href="../fotos/diet.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#080808;--panel:#F9F1D3;--accent:#0f6b3e;--muted:#6b6b6b;--radius:28px;--input-radius:10px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Arial;background:var(--bg);color:#111}
+
+    /* Layout com a imagem ocupando mais espaço e painel deslocado à esquerda */
+    .stage{min-height:100vh;display:grid;grid-template-columns:50% 50%;align-items:center;justify-items:start;padding:40px;gap:32px}
+
+    /* Coluna da esquerda: imagem */
+    .left{
+      width:100%;
+      height:80vh;
+      border-radius:16px;
+      overflow:hidden;
+      box-shadow:0 30px 90px rgba(0,0,0,0.6);
+      background:url('../fotos/BurgerHouse.png') center left/cover no-repeat;
+      position:relative;
+    }
+    .left::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.15) 60%)}
+
+    /* Painel da direita: mais próximo do centro visual */
+    .panel{
+      background:var(--panel);
+      width:380px;
+      max-width:90%;
+      border-radius:var(--radius);
+      padding:34px;
+      box-shadow:0 30px 80px rgba(0,0,0,0.5);
+      border:1px solid rgba(0,0,0,0.06);
+      position:relative;
+      transform:translateX(-60px);
+    }
+    .panel h2{text-align:center;margin-bottom:8px;font-size:20px;font-weight:800;color:#222}
+    .panel p{text-align:center;margin-bottom:18px;color:#333;font-size:13px;line-height:1.5}
+
+    form{display:flex;flex-direction:column;gap:12px}
+    .input{height:44px;border-radius:var(--input-radius);padding:0 14px;font-size:14px;border:1px solid rgba(0,0,0,0.12);background:#fff;box-shadow:inset 0 2px 6px rgba(0,0,0,0.04)}
+
+    .login-btn{height:44px;border-radius:12px;border:none;background:transparent;border:1px solid rgba(0,0,0,0.08);font-weight:700;cursor:pointer}
+
+    .social-row{display:flex;gap:10px;margin-top:6px}
+    .social{flex:1;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;cursor:pointer;border:1px solid rgba(0,0,0,0.06)}
+    .social-google{background:#fff;color:#444}
+    .social-fb{background:#1877F2;color:#fff}
+    .social svg{width:18px;height:18px}
+
+    .links{text-align:center;margin-top:8px;color:var(--muted);font-size:13px}
+    .links a{color:var(--accent);text-decoration:none;font-weight:600}
+
+    .cta{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:18px}
+    .cta-button{background:var(--accent);color:#fff;border:none;padding:12px 22px;border-radius:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:10px;box-shadow:0 14px 40px rgba(11,107,62,0.18)}
+    .create-account{background:#f2b749;color:#fff;border:none;padding:10px 18px;border-radius:12px;font-weight:700;cursor:pointer;box-shadow:0 12px 30px rgba(0,0,0,0.18)}
+
+    @media (max-width:980px){
+      .stage{grid-template-columns:1fr;justify-items:center;padding:28px}
+      .left{height:48vh;border-radius:12px}
+      .panel{transform:none;width:92%}
+    }
+
+    /* Modal cadastro */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;z-index:60}
+    .modal{background:#fff;border-radius:12px;padding:20px 22px;max-width:420px;width:92%;box-shadow:0 30px 80px rgba(0,0,0,0.5);transform:translateY(-8px);opacity:0;transition:all .22s ease}
+    .overlay.show{display:flex}.overlay.show .modal{transform:none;opacity:1}
+    .modal h3{text-align:center;margin:0 0 8px;font-size:16px}
+    .modal p{text-align:center;margin:0 0 14px;color:#555}
+    .modal form{display:flex;flex-direction:column;gap:10px}.modal .input{height:42px}
+    .close{position:absolute;right:12px;top:12px;background:#fff;border-radius:50%;width:32px;height:32px;display:grid;place-items:center;cursor:pointer;border:1px solid rgba(0,0,0,0.08)}
+  </style>
+</head>
+<body>
+  <div class="stage" role="main">
+    <div class="left" aria-hidden="true"></div>
+
+    <aside class="panel" aria-label="Login">
+      <h2>Bem-vindo à Burger House!</h2>
+      <p>Aqui, cada mordida é uma explosão de sabor! Na Burger House, acreditamos que o hambúrguer é uma arte. Faça seu login para continuar.</p>
+
+      <form id="loginForm">
+        <input class="input" id="telefone" type="tel" placeholder="Telefone" autocomplete="tel">
+        <input class="input" id="senha" type="password" placeholder="Senha" autocomplete="current-password">
+        <button type="button" id="btnLogin" class="login-btn">Login</button>
+
+        <div class="social-row">
+          <button type="button" id="btnGoogle" class="social social-google" aria-label="Entrar com Google">
+            <!-- ícone simples Google -->
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="#EA4335" d="M12 10.2v3.6h5.1c-.2 1.2-.8 2.2-1.8 2.9v2.4h2.9c1.7-1.6 2.7-3.9 2.7-6.6 0-.6-.1-1.3-.2-1.9H12z"/><path fill="#34A853" d="M6.5 14.3l-.9.7-2.1 1.6c1.3 2.6 4 4.4 7.1 4.4 2.1 0 3.9-.7 5.2-1.9l-2.5-2c-.7.4-1.5.6-2.7.6-2.1 0-3.9-1.4-4.6-3.4z"/><path fill="#FBBC05" d="M3.5 8.7c-.4 1-.6 2-.6 3.1s.2 2.1.6 3.1c.7 2 2.5 3.4 4.6 3.4.8 0 1.5-.2 2.1-.4l-2.5-2c-.5-.2-.9-.5-1.2-.9z"/><path fill="#4285F4" d="M12 4.5c1.1 0 2 .4 2.7 1.1l2-2C15.9 2.6 14.1 2 12 2 8.9 2 6.2 3.8 4.5 6.3l2.5 2c.7-2 2.5-3.8 5-3.8z"/></svg>
+            Google
+          </button>
+          <button type="button" id="btnFacebook" class="social social-fb" aria-label="Entrar com Facebook">
+            <!-- ícone simples Facebook -->
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M22 12.07C22 6.48 17.52 2 11.93 2S2 6.48 2 12.07c0 4.99 3.66 9.13 8.44 9.93v-7.04H8.19v-2.9h2.26V9.41c0-2.23 1.33-3.46 3.36-3.46.97 0 1.98.17 1.98.17v2.17h-1.11c-1.09 0-1.43.68-1.43 1.38v1.65h2.43l-.39 2.9h-2.04v7.04C18.34 21.2 22 17.06 22 12.07z" fill="currentColor"/></svg>
+            Facebook
+          </button>
+        </div>
+
+        <div class="links">Esqueceu a senha? <a href="#">Clique aqui</a></div>
+
+        <div class="cta">
+          <a href="../cliente/index.html" class="cta-button" id="ver-cardapio">Ver Cardápio →</a>
+          <button type="button" id="abrirCadastro" class="create-account">Criar conta</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+
+  <!-- Modal Criar Conta -->
+  <div class="overlay" id="cadastroModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="close" id="fecharCadastro" aria-label="Fechar">×</div>
+      <h3 id="modalTitle">CRIAR CONTA</h3>
+      <p>Preencha os campos abaixo para criar sua conta e continuar.</p>
+      <form id="formCadastro">
+        <input class="input" name="nome" type="text" placeholder="Nome completo" required>
+        <input class="input" name="telefone" type="tel" placeholder="Telefone" required>
+        <input class="input" name="email" type="email" placeholder="E-mail" required>
+        <input class="input" name="senha" type="password" placeholder="Senha" required>
+        <button type="submit" class="create-account">Continuar</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    /*
+      openOAuth(provider)
+      -------------------
+      Abre uma janela pop-up para iniciar o fluxo OAuth do provedor escolhido.
+      IMPORTANTE: substitua `url` pela rota do seu backend que inicia o OAuth,
+      por exemplo: https://seusite.com/auth/google
+      O backend deve redirecionar para o provedor e, após sucesso, fechar a janela
+      (ou enviar uma mensagem ao opener via postMessage).
+    */
+    function openOAuth(provider){
+      const url = `/auth/${provider}`; // <-- modificar para seu endpoint real
+      const w = 600, h = 700;
+      const left=(screen.width-w)/2, top=(screen.height-h)/2;
+      const win = window.open(url, 'oauth_'+provider, `width=${w},height=${h},left=${left},top=${top}`);
+
+      // Polling simples: detecta quando o popup foi fechado. Em produção
+      // prefira receber um postMessage do popup com o resultado.
+      const timer = setInterval(()=>{
+        if(!win || win.closed){
+          clearInterval(timer);
+          // aqui você deveria verificar com o backend se o login foi concluído (fetch)
+          alert(provider + ' — popup fechado (simulação).');
+        }
+      }, 500);
+    }
+
+    // IDs dos botões/elementos existem no markup acima
+    document.getElementById('btnGoogle').addEventListener('click', ()=>openOAuth('google'));
+    document.getElementById('btnFacebook').addEventListener('click', ()=>openOAuth('facebook'));
+
+    // Redirecionamento para o cardápio (exemplo): modificar conforme sua navegação
+    document.getElementById('ver-cardapio').addEventListener('click', ()=>{ window.location.href = '/cardapio.html'; });
+
+    // Login simulado (substituir por fetch/axios para autenticar no backend)
+    document.getElementById('btnLogin').addEventListener('click', ()=>{
+      const tel = document.getElementById('telefone').value.trim();
+      const pwd = document.getElementById('senha').value.trim();
+      // Exemplo: validação mínima no front
+      if(!tel || !pwd){
+        alert('Preencha telefone e senha.');
+        return;
+      }
+      alert('Login simulado. Substitua por chamada ao seu backend.');
+    });
+
+    /* Modal de cadastro: abertura/fechamento e submissão do formulário (simulado)
+       - Em produção valide os campos no backend
+       - Considere adicionar um spinner/feedback enquanto o backend processa
+    */
+    const cadastroModal = document.getElementById('cadastroModal');
+    const abrirCadastroBtn = document.getElementById('abrirCadastro');
+    const fecharCadastroBtn = document.getElementById('fecharCadastro');
+    const formCadastro = document.getElementById('formCadastro');
+
+    abrirCadastroBtn.addEventListener('click', ()=>{
+      cadastroModal.classList.add('show');
+      cadastroModal.style.display = 'flex';
+      cadastroModal.setAttribute('aria-hidden','false');
+      // força a transição para a modal (pequena timeout para aplicar a animação)
+      setTimeout(()=>cadastroModal.querySelector('.modal').style.transform = 'translateY(0)', 20);
+    });
+
+    function closeModal(){
+      cadastroModal.classList.remove('show');
+      cadastroModal.style.display = 'none';
+      cadastroModal.setAttribute('aria-hidden','true');
+      cadastroModal.querySelector('.modal').style.transform = 'translateY(-8px)';
+    }
+
+    fecharCadastroBtn.addEventListener('click', closeModal);
+    cadastroModal.addEventListener('click', e => { if(e.target === cadastroModal) closeModal(); });
+
+    formCadastro.addEventListener('submit', e => {
+      e.preventDefault();
+      // Aqui você pegará os valores e chamará seu endpoint de cadastro (fetch/axios)
+      alert('Cadastro simulado com sucesso!');
+      closeModal();
+    });
+  </script>
+</body>
+</html>
